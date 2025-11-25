@@ -1,0 +1,74 @@
+# ===========================================
+# Django + Python
+# ===========================================
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+db.sqlite3
+
+# Django secret files (if any)
+.env
+.env.local
+*.env.*
+
+# ===========================================
+# Virtual Environment
+# ===========================================
+venv/
+env/
+ENV/
+.venv/
+
+# ===========================================
+# Tailwind / Node / Build Artifacts
+# ===========================================
+node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Tailwind static build output
+theme/static/css/dist/
+theme/static/css/*.map
+theme/static_src/.cache/
+theme/static_src/build/
+
+# ===========================================
+# Editors / IDEs
+# ===========================================
+.vscode/
+.idea/
+*.code-workspace
+
+# ===========================================
+# OS Files
+# ===========================================
+.DS_Store
+Thumbs.db
+
+# ===========================================
+# Media Files (uploads)
+# ===========================================
+media/
+uploads/
+
+# ===========================================
+# Logs
+# ===========================================
+*.log
+
+# ===========================================
+# Django Migrations — OPTIONAL
+# (If you don’t want to track migrations at early stage)
+# ===========================================
+# **/migrations/
+# !**/migrations/__init__.py
+
+# ===========================================
+# Compiled Assets
+# ===========================================
+*.min.js
+*.min.css
