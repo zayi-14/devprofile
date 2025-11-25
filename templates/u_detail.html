@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} | Project Details</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        dark: '#0a0a0a',
+                        card: '#171717',
+                        primary: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        .glass {
+            background: rgba(23, 23, 23, 0.8);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-gray-300 font-sans antialiased">
+
+    <!-- NAV -->
+    <nav class="fixed w-full z-50 glass border-b border-white/10 top-0">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="/" class="text-xl font-bold font-mono text-white tracking-tighter">
+                <span class="text-blue-400">&lt;</span> {{ profile.name|default:"My Portfolio" }} <span
+                    class="text-blue-400">/&gt;</span>
+            </a>
+            <a href="{% url 'projects' %}" class="text-sm font-medium hover:text-white transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i> All Projects
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="pt-32 pb-20 px-6">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- Title Block -->
+            <div class="mb-12">
+                <span class="text-blue-400 font-mono text-sm font-bold tracking-wider uppercase mb-2 block">
+                    Project Showcase
+                </span>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                    {{ project.title }}
+                </h1>
+                <p class="text-xl text-gray-400 max-w-3xl leading-relaxed">
+                    {{ project.description }}
+                </p>
+            </div>
+
+            <!-- Thumbnail -->
+            {% if project.thumbnail %}
+            <div
+                class="w-full h-64 md:h-96 bg-gray-800 rounded-3xl overflow-hidden mb-12 border border-white/10 relative">
+                <img src="{{ project.thumbnail.url }}" class="w-full h-full object-cover opacity-90">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-60"></div>
+            </div>
+            {% endif %}
+
+            <!-- Grid Layout -->
+            <div class="grid lg:grid-cols-3 gap-12">
+
+                <div class="lg:col-span-2 space-y-12">
+
+                    <!-- Highlights Section -->
+                    {% if bullet_list %}
+                    <section>
+                        <h2 class="text-2xl font-bold text-white mb-4">Key Features</h2>
+                        <ul class="space-y-4">
+                            {% for point in bullet_list %}
+                            <li class="flex gap-3">
+                                <i class="fa-solid fa-check-circle text-blue-500 mt-1"></i>
+                                <span class="text-gray-400">{{ point }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                    {% if project.live_link %}
+                    <div class="mt-8">
+                        <a href="{{ project.live_link }}" target="_blank"
+                            class="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-primary text-white font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20">
+                            Visit Live Site
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% endif %}
+                </div>
+
+                <!-- SIDE INFO -->
+                <div class="grid grid-cols-1 gap-6">
+
+                    <div class="bg-card border border-white/10 rounded-2xl p-6">
+                        <h3 class="text-white font-bold mb-6">Project Info</h3>
+
+                        <div class="space-y-4 text-sm">
+                            {% if project.role %}
+                            <div>
+                                <span class="text-gray-500 block mb-1">Role</span>
+                                <span class="text-white">{{ project.role }}</span>
+                            </div>
+                            <hr class="border-white/5">
+                            {% endif %}
+
+                            {% if project.start_date %}
+                            <div>
+                                <span class="text-gray-500 block mb-1">Timeline</span>
+                                <span class="text-white">
+                                    {{ project.start_date|date:"M Y" }}
+                                    {% if project.end_date %} - {{ project.end_date|date:"M Y" }}{% endif %}
+                                </span>
+                            </div>
+                            <hr class="border-white/5">
+                            {% endif %}
+
+                            <div>
+                                <span class="text-gray-500 block mb-1">Tech Stack</span>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    {% for skill in project.skills_used.all %}
+                                    <span
+                                        class="px-2 py-1 bg-blue-500/10 text-blue-400 rounded border border-blue-500/20 text-xs">
+                                        {{ skill.name }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-8 border-t border-white/5 text-center">
+        <p class="text-gray-500 text-sm">&copy; {{ profile.name|default:"Portfolio" }}.</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects | Portfolio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        dark: '#050505',
+                        card: 'rgba(23, 23, 23, 0.6)',
+                        primary: '#3b82f6',
+                        accent: '#10b981',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+        .text-gradient {
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glass Styles matching your home page */
+        .glass {
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
+
+        /* 3D Utilities */
+        .preserve-3d { transform-style: preserve-3d; }
+        .translate-z-20 { transform: translateZ(20px); }
+        
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-gray-300 font-sans antialiased">
+
+    <div id="canvas-bg"></div>
+
+    <header class="fixed top-0 w-full glass z-50 py-4 px-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-lg font-mono font-bold hover:text-primary transition flex items-center gap-2 group">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
+                Back Home
+            </a>
+            <h1 class="text-lg font-mono font-bold text-white">/ ALL PROJECTS</h1>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20 px-6 max-w-6xl mx-auto min-h-screen">
+
+        <div class="text-center mb-12 animate-fade-in-up">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Project Archive</h2>
+            <p class="text-gray-400 font-mono text-sm">Every project reflects learning, logic, and architecture.</p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 justify-center mb-16 animate-fade-in-up" style="animation-delay: 0.1s;">
+
+            <a href="{% url 'projects' %}" 
+               class="px-5 py-2 rounded-full text-xs font-mono font-bold border transition-all
+               {% if not selected_skill %} 
+                   bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105
+               {% else %} 
+                   bg-white/5 border-white/10 hover:border-primary hover:text-white hover:bg-white/10
+               {% endif %}">
+                ALL
+            </a>
+
+            {% for skill in skills %}
+            <a href="?skill={{ skill.name }}" 
+               class="px-5 py-2 rounded-full text-xs font-mono font-bold border transition-all
+               {% if selected_skill == skill.name %} 
+                   bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105
+               {% else %} 
+                   bg-white/5 border-white/10 hover:border-primary hover:text-white hover:bg-white/10
+               {% endif %}">
+                {{ skill.name|upper }}
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if projects %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style="animation-delay: 0.2s;">
+
+            {% for project in projects %}
+            <article
+                class="glass-card rounded-2xl overflow-hidden group relative flex flex-col h-full"
+                data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+
+                <div class="h-48 overflow-hidden bg-gray-900 relative preserve-3d">
+                    {% if project.thumbnail %}
+                    <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}"
+                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-700">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-gray-500 font-mono text-xs">NO IMAGE</div>
+                    {% endif %}
+
+                    {% if project.role %}
+                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-[10px] font-mono text-white border border-white/10 translate-z-20 shadow-lg">
+                        {{ project.role }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="p-6 flex flex-col flex-grow preserve-3d">
+                    <h3 class="text-xl font-bold text-white mb-2 translate-z-20">{{ project.title }}</h3>
+
+                    <p class="text-sm text-gray-400 mb-4 line-clamp-3 flex-grow translate-z-20">
+                        {{ project.description }}
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 translate-z-20">
+                        {% for skill in project.skills_used.all %}
+                        <span class="text-[10px] px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">
+                            {{ skill.name }}
+                        </span>
+                        {% empty %}
+                        <span class="text-[10px] text-gray-500 font-mono">No tags</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="pt-4 border-t border-white/5 flex items-center justify-between translate-z-20">
+                        <a href="{% url 'project_detail' project.slug %}"
+                            class="text-sm font-bold text-blue-400 hover:text-blue-300 transition flex items-center gap-2">
+                            View Details <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+
+                        {% if project.live_link %}
+                        <a href="{{ project.live_link }}" target="_blank"
+                            class="text-xs text-gray-500 hover:text-white transition-colors flex items-center gap-1 font-mono">
+                            Live Demo <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="text-center py-20 glass-card rounded-2xl animate-fade-in-up">
+            <i class="fa-solid fa-box-open text-4xl text-gray-600 mb-4"></i>
+            <p class="text-gray-400 font-mono">No projects found for this filter.</p>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <footer class="py-8 border-t border-white/5 text-center relative z-10">
+        <p class="text-gray-500 text-sm font-mono">
+            &copy; <script>document.write(new Date().getFullYear())</script> {{ profile.name|default:"My Portfolio" }}. All rights reserved.
+        </p>
+    </footer>
+
+    <script>
+        // 1. VANTA NET (The exact animation from your home page)
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                VANTA.NET({
+                    el: "#canvas-bg",
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    color: 0x3b82f6,      // Blue connections
+                    backgroundColor: 0x050505, // Dark background
+                    points: 12.00,
+                    maxDistance: 22.00,
+                    spacing: 18.00,
+                    showDots: true
+                })
+            } catch (e) {
+                console.log("3D Background failed to load, falling back to CSS");
+            }
+        });
+
+        // 2. Vanilla Tilt for Cards
+        VanillaTilt.init(document.querySelectorAll(".glass-card"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.5,
+        });
+
+        // 3. Scroll Reveal Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.glass-card').forEach(el => {
+            el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
