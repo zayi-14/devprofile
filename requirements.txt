@@ -6,11 +6,13 @@ cffi==2.0.0
 chardet==5.2.0
 charset-normalizer==3.4.4
 click==8.3.1
+cloudinary==1.44.1
 colorama==0.4.6
 cookiecutter==2.6.0
 cryptography==46.0.3
 dj-database-url==3.0.1
 Django==5.2.8
+django-cloudinary-storage==0.3.0
 django-tailwind==4.4.1
 gunicorn==23.0.0
 idna==3.11
