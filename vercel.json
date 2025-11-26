@@ -13,9 +13,6 @@
     }
   ],
   "env": {
-    "DATABASE_URL": "@database_url",
-    "SECRET_KEY": "@secret_key",
-    "DEBUG": "False"
-  },
-  "postBuildCommand": "python manage.py migrate"
+    "PYTHONUNBUFFERED": "1"
+  }
 }
