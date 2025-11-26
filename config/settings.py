@@ -108,24 +108,23 @@ else:
 # ─────────────────────────────────────
 # CLOUDINARY STORAGE FOR MEDIA
 # ─────────────────────────────────────
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
-}
-
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-
-# No MEDIA_ROOT needed in Vercel!
-MEDIA_URL = '/media/'
-
-# ─────────────────────────────────────
-# STATIC FILES
-# ─────────────────────────────────────
+# Static Files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Media Files - Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    'API_KEY': os.environ.get("CLOUDINARY_API_KEY"),
+    'API_SECRET': os.environ.get("CLOUDINARY_API_SECRET"),
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+MEDIA_URL = '/media/'
+
 
 # ─────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
