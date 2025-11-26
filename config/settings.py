@@ -19,7 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ─────────────────────────────────────
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = [devprofile-xi.vercel.app,.vercel.app,localhost,127.0.0.1,]
+ALLOWED_HOSTS = [".vercel.app", "localhost", "127.0.0.1"]
+
 
 # ─────────────────────────────────────
 # APPS
