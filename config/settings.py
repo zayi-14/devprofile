@@ -1,24 +1,29 @@
 """
 Django settings for config project.
-Production + Deployment Ready (Render)
+Local + Production (Vercel) Ready
 """
 
 from pathlib import Path
 import os
+import pymysql
 from dotenv import load_dotenv
 import dj_database_url
 
 load_dotenv()
+pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ────────────────────────────────────────────────
 # SECURITY
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-$^!qq19d3xvu2&@a@yxq(4jp6)k_9-i1%ig86vf&ma2*^+$0==")
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-
+# ────────────────────────────────────────────────
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-key-not-for-production")
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
-# Apps
+# ────────────────────────────────────────────────
+# APPS
+# ────────────────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,13 +31,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'portfolio',
-]
 
-# Middleware
+    # Your apps
+    'portfolio',
+
+    # Tailwind
+    'tailwind',
+    'theme',
+]
+TAILWIND_APP_NAME = 'theme'
+
+# ────────────────────────────────────────────────
+# MIDDLEWARE
+# ────────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  #  ← Enable static files on Render
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static deployment
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -43,15 +57,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# Templates
+# ────────────────────────────────────────────────
+# TEMPLATES
+# ────────────────────────────────────────────────
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # Global templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -62,11 +77,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# DATABASE — Render PostgreSQL
-import dj_database_url
+# ────────────────────────────────────────────────
+# DATABASE — Auto Switch Local MySQL <-> Vercel Neon PostgreSQL
+# ────────────────────────────────────────────────
 
-if DEBUG:
-    # Local development - use MySQL
+if os.environ.get("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
@@ -81,37 +103,28 @@ if DEBUG:
             },
         }
     }
-else:
-    # Production (Render) - use Postgres
-    DATABASES = {
-        "default": dj_database_url.config(
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
 
-
-# Password Validation
+# ────────────────────────────────────────────────
+# AUTH
+# ────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
 ]
 
-# Timezone / Language
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-# Static Files (Required for Render)
+# ────────────────────────────────────────────────
+# STATIC FILES
+# ────────────────────────────────────────────────
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [BASE_DIR / "static"]
-
-# WhiteNoise Compression
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media Files
+# MEDIA FILES
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# ────────────────────────────────────────────────
+# OTHER
+# ────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
