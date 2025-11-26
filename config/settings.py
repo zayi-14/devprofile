@@ -1,6 +1,6 @@
 """
 Django settings for config project.
-Local + Production (Vercel) Ready
+Local + Production (Vercel + Neon + Cloudinary) Ready
 """
 
 from pathlib import Path
@@ -17,11 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ─────────────────────────────────────
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = [
-    ".vercel.app",
-    "localhost",
-    "127.0.0.1"
-]
+ALLOWED_HOSTS = [".vercel.app", "localhost", "127.0.0.1"]
+
 
 # ─────────────────────────────────────
 # INSTALLED APPS
@@ -34,20 +31,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Your App
     'portfolio',
 
-    # Cloud Storage
+    # Cloudinary Media Storage
     'cloudinary',
     'cloudinary_storage',
 ]
+
 
 # ─────────────────────────────────────
 # MIDDLEWARE
 # ─────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Required for Vercel static
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static support for Vercel
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
 
 # ─────────────────────────────────────
 # TEMPLATES
@@ -78,9 +76,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # ─────────────────────────────────────
-# DATABASE CONFIG
-# Use Neon on Vercel, MySQL locally only if DATABASE_URL is missing
+# DATABASE (Neon on Vercel, MySQL only locally)
 # ─────────────────────────────────────
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
@@ -91,9 +89,6 @@ if os.environ.get("DATABASE_URL"):
         )
     }
 else:
-    import pymysql
-    pymysql.install_as_MySQLdb()
-
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
@@ -105,16 +100,16 @@ else:
         }
     }
 
+
 # ─────────────────────────────────────
-# CLOUDINARY STORAGE FOR MEDIA
+# STATIC & MEDIA
 # ─────────────────────────────────────
-# Static Files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Cloudinary Media Storage
+# Cloudinary Media
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
@@ -122,7 +117,6 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 MEDIA_URL = '/media/'
 
 
