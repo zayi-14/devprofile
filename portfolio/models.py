@@ -14,10 +14,10 @@ class Profile(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     bio = models.TextField()
-    profile_image = models.ImageField(upload_to="profile/", blank=True, null=True)
-    resume = models.FileField(upload_to="resume/", blank=True, null=True)
 
-    # Contact + socials
+    profile_image = models.ImageField(blank=True, null=True)
+    resume = models.FileField(blank=True, null=True)
+
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     github_url = models.URLField(blank=True, null=True)
@@ -27,7 +27,6 @@ class Profile(models.Model):
         return self.name
 
     def clean(self):
-        # Allow only one profile instance in DB
         if Profile.objects.exists() and not self.pk:
             raise ValidationError("Only one profile record is allowed.")
 
