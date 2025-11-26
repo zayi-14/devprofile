@@ -7,6 +7,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 
+from django.db import models
+from django.core.exceptions import ValidationError
+
 class Profile(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
@@ -14,7 +17,7 @@ class Profile(models.Model):
     profile_image = models.ImageField(upload_to="profile/", blank=True, null=True)
     resume = models.FileField(upload_to="resume/", blank=True, null=True)
 
-    # NEW FIELDS (for contact section + socials)
+    # Contact + socials
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     github_url = models.URLField(blank=True, null=True)
@@ -23,11 +26,10 @@ class Profile(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        # enforce only one profile entry in database
-        if not self.pk and Profile.objects.exists():
+    def clean(self):
+        # Allow only one profile instance in DB
+        if Profile.objects.exists() and not self.pk:
             raise ValidationError("Only one profile record is allowed.")
-        super().save(*args, **kwargs)
 
 
 # ---------------- SKILLS ----------------
