@@ -5,8 +5,8 @@ Local + Production (Vercel) Ready
 
 from pathlib import Path
 import os
-import pymysql
 from dotenv import load_dotenv
+import pymysql
 import dj_database_url
 
 load_dotenv()
@@ -14,16 +14,20 @@ pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 # SECURITY
-# ────────────────────────────────────────────────
-SECRET_KEY = os.environ.get("SECRET_KEY", "dev-key-not-for-production")
+# ─────────────────────────────────────
+SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = [
+    ".vercel.app",
+    "localhost",
+    "127.0.0.1",
+]
 
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 # APPS
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,21 +36,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Your apps
+    # Your app
     'portfolio',
-
-    # Tailwind
-    'tailwind',
-    'theme',
 ]
-TAILWIND_APP_NAME = 'theme'
 
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 # MIDDLEWARE
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static deployment
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static support for Vercel
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,9 +56,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 # TEMPLATES
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -77,13 +76,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# ────────────────────────────────────────────────
-# DATABASE — Auto Switch Local MySQL <-> Vercel Neon PostgreSQL
-# ────────────────────────────────────────────────
-
+# ─────────────────────────────────────
+# DATABASE (Auto: Local MySQL ↔ Vercel PostgreSQL)
+# ─────────────────────────────────────
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
         "default": dj_database_url.config(
+            default=os.environ["DATABASE_URL"],
             conn_max_age=600,
             ssl_require=True,
         )
@@ -92,39 +91,40 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
-            "NAME": os.environ.get("DB_NAME", ""),
-            "USER": os.environ.get("DB_USER", ""),
-            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+            "NAME": os.environ.get("DB_NAME"),
+            "USER": os.environ.get("DB_USER"),
+            "PASSWORD": os.environ.get("DB_PASSWORD"),
             "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
             "PORT": os.environ.get("DB_PORT", "3306"),
             "OPTIONS": {
                 "charset": "utf8mb4",
                 "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
-            },
+            }
         }
     }
 
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 # AUTH
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
 ]
 
-# ────────────────────────────────────────────────
-# STATIC FILES
-# ────────────────────────────────────────────────
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+# ─────────────────────────────────────
+# STATIC & MEDIA
+# ─────────────────────────────────────
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# MEDIA FILES
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# ────────────────────────────────────────────────
-# OTHER
-# ────────────────────────────────────────────────
+# ─────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
