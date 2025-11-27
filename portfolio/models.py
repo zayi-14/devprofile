@@ -5,16 +5,28 @@ from django.core.exceptions import ValidationError
 # ---------------- PROFILE (Single Instance) ----------------
 from django.db import models
 from django.core.exceptions import ValidationError
+from cloudinary_storage.storage import MediaCloudinaryStorage
 
 
 class Profile(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     bio = models.TextField()
-    profile_image = models.ImageField(upload_to="profile/", blank=True, null=True)
-    resume = models.FileField(upload_to="resume/", blank=True, null=True)
 
-    # NEW FIELDS (for contact section + socials)
+    profile_image = models.ImageField(
+        storage=MediaCloudinaryStorage(),
+        upload_to="profile/",
+        blank=True,
+        null=True
+    )
+
+    resume = models.FileField(
+        storage=MediaCloudinaryStorage(),
+        upload_to="resume/",
+        blank=True,
+        null=True
+    )
+
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     github_url = models.URLField(blank=True, null=True)
@@ -24,7 +36,6 @@ class Profile(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        # enforce only one profile entry in database
         if not self.pk and Profile.objects.exists():
             raise ValidationError("Only one profile record is allowed.")
         super().save(*args, **kwargs)
