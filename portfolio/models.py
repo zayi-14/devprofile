@@ -72,7 +72,7 @@ class Project(models.Model):
     slug = models.SlugField(unique=True, blank=True, editable=False)  # Auto + hidden
     role = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField()
-    thumbnail = models.ImageField(upload_to="projects/", blank=True, null=True)
+    thumbnail = models.ImageField(storage=MediaCloudinaryStorage(),upload_to="projects/",blank=True,null=True)
     skills_used = models.ManyToManyField("Skill", blank=True)
     github_link = models.URLField(blank=True, null=True)
     live_link = models.URLField(blank=True, null=True)
