@@ -148,23 +148,14 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* Intro Overlay Styles */
-        
-
         /* RESPONSIVE IMPROVEMENTS */
-
-        /* Prevent horizontal scroll on mobile */
         body {
             overflow-x: hidden;
         }
-
-        /* Better mobile menu positioning */
         #mobileMenu {
             max-height: calc(100vh - 4rem);
             overflow-y: auto;
         }
-
-        /* Responsive text sizing */
         @media (max-width: 640px) {
             .hero-title {
                 font-size: clamp(2rem, 8vw, 3rem);
@@ -175,14 +166,12 @@
             }
         }
 
-        /* Disable tilt effect on mobile for better performance */
         @media (max-width: 768px) {
             [data-tilt] {
                 transform: none !important;
             }
         }
 
-        /* Reduce animation complexity on mobile */
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
@@ -191,7 +180,6 @@
             }
         }
 
-        /* Better touch targets on mobile */
         @media (max-width: 768px) {
 
             button,
@@ -216,7 +204,6 @@
     <div class="noise-bg"></div>
     <canvas id="neural-canvas"></canvas>
 
-    <!-- RESPONSIVE NAVIGATION -->
     <nav class="fixed w-full z-50 glass top-0">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
             <a href="#"
@@ -250,12 +237,9 @@
         </div>
     </nav>
 
-    <!-- RESPONSIVE HERO SECTION -->
     <section id="about"
         class="relative py-16 sm:py-20 md:py-24 px-4 sm:px-6 min-h-screen flex items-center overflow-hidden perspective-1000">
         <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 sm:gap-12 items-start w-full">
-
-            <!-- Text Content - Responsive Order -->
             <div
                 class="space-y-4 sm:space-y-6 animate-fade-in-up text-center lg:text-left order-2 lg:order-1 relative z-10 self-center">
                 <div
@@ -267,17 +251,13 @@
                 <div class="max-w-3xl mx-auto lg:mx-0">
                     <h1 class="font-bold tracking-tight leading-[1.1] text-white">
 
-                        <!-- Greeting -->
                         <span class="block text-sm sm:text-lg md:text-xl text-gray-400 animate-fade-in-up">
                             Hi, I'm
                         </span>
 
-                        <!-- Name - Responsive sizing -->
                         <span class="hero-title block text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight mt-1">
                             {{ profile.name|default:"Your Name" }}
                         </span>
-
-                        <!-- Role - Responsive sizing -->
                         <span
                             class="hero-subtitle block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium text-gray-500 mt-2 leading-snug">
                             {{ profile.role|default:"Software Developer" }}
@@ -305,7 +285,6 @@
                 </div>
             </div>
 
-            <!-- Image Section - Responsive -->
             <div class="relative flex flex-col items-center lg:items-end animate-fade-in-up order-1 lg:order-2 lg:-mt-10 perspective-1000"
                 style="animation-delay: 0.2s;">
                 <div class="relative w-full max-w-[450px] aspect-[4/5] flex items-start justify-center animate-float preserve-3d mb-8">
@@ -323,7 +302,6 @@
                         <i class="fa-solid fa-server text-3xl text-pink-500"></i> </div>
                 </div>
 
-                <!-- Stats Grid - Responsive -->
                 <div class="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-[450px]">
 
                     <div class="glass-card p-3 sm:p-4 rounded-lg sm:rounded-xl text-center" data-tilt data-tilt-max="15"
@@ -349,11 +327,9 @@
         </div>
     </section>
 
-    <!-- RESPONSIVE TECH STACK SECTION -->
     <section id="stack" class="py-10 sm:py-16 px-4 sm:px-6 relative z-10">
         <div class="max-w-6xl mx-auto">
 
-            <!-- Heading -->
             <div class="text-center mb-12 sm:mb-16">
                 <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
                     Technical Arsenal
@@ -363,20 +339,17 @@
                 </p>
             </div>
 
-            <!-- Skills Grid -->
             <div id="stackGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
 
                 {% for skill in skills %}
                 <div class="skill-card glass-card p-4 sm:p-6 rounded-xl flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all {% if forloop.counter > 12 %}togglable-stack hidden{% endif %}"
                     data-tilt data-tilt-scale="1.05">
 
-                    <!-- Icon -->
                     <div
                         class="text-3xl sm:text-4xl text-gray-400 hover:text-blue-400 transition-colors transform translate-z-20">
                         {{ skill.icon_html|safe }}
                     </div>
 
-                    <!-- Skill Name -->
                     <span class="font-medium text-xs sm:text-sm text-gray-200 text-center translate-z-20">
                         {{ skill.name }}
                     </span>
@@ -390,7 +363,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Toggle Button -->
             {% if skills|length > 12 %}
             <div class="mt-8 sm:mt-10 text-center">
                 <button id="toggleStackBtn"
@@ -405,8 +377,6 @@
         </div>
     </section>
 
-
-    <!-- RESPONSIVE PROJECTS SECTION -->
     <section id="projects" class="py-16 sm:py-20 px-4 sm:px-6 relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-4">
@@ -493,7 +463,6 @@
         </div>
     </section>
 
-    <!-- RESPONSIVE CONTACT SECTION -->
     <section id="contact" class="py-16 sm:py-24 px-4 sm:px-6 border-t border-white/5 relative z-10">
         <div class="max-w-4xl mx-auto">
             <div class="grid md:grid-cols-2 gap-8 sm:gap-12">
@@ -554,7 +523,6 @@
                     </div>
                 </div>
 
-                <!-- Contact Form - Responsive -->
                 <form action="https://formspree.io/f/xblawjey" method="POST"
                     class="bg-card p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl">
                     <div class="space-y-4 translate-z-20">
@@ -588,7 +556,6 @@
         </div>
     </section>
 
-    <!-- RESPONSIVE FOOTER -->
     <footer class="py-6 sm:py-8 border-t border-white/5 text-center relative z-10">
         <p class="text-gray-500 text-xs sm:text-sm px-4">
             &copy;
@@ -597,10 +564,8 @@
         </p>
     </footer>
 
-    
-
     <script>
-        // 1. NEURAL BACKGROUND ANIMATION - Responsive particle count
+    
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('neural-canvas');
             if (!canvas) return;
@@ -609,11 +574,10 @@
             let width, height;
             let particles = [];
 
-            // Responsive particle count based on screen size
             function getParticleCount() {
-                if (window.innerWidth < 640) return 30;      // Mobile
-                if (window.innerWidth < 1024) return 60;     // Tablet
-                return 90;                                     // Desktop
+                if (window.innerWidth < 640) return 30;      
+                if (window.innerWidth < 1024) return 60;     
+                return 90;                                     
             }
 
             const connectionDistance = window.innerWidth < 768 ? 120 : 150;
@@ -661,7 +625,6 @@
                     particles[i].update();
                     particles[i].draw();
 
-                    // Draw connections
                     for (let j = i; j < particles.length; j++) {
                         const dx = particles[i].x - particles[j].x;
                         const dy = particles[i].y - particles[j].y;
@@ -686,9 +649,6 @@
             animateParticles();
         });
 
-        // 2. UI INTERACTIONS (Scroll, Menu, Tilt, Stack)
-
-        // Initialize Tilt - disable on mobile
         if (window.matchMedia("(min-width: 768px)").matches) {
             VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
                 max: 15,
@@ -698,7 +658,6 @@
             });
         }
 
-        // Mobile Menu
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
 
@@ -706,7 +665,6 @@
             menuBtn.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
 
-                // Toggle Icon
                 const icon = menuBtn.querySelector('i');
                 if (mobileMenu.classList.contains('hidden')) {
                     icon.classList.remove('fa-xmark');
@@ -718,7 +676,6 @@
             });
         }
 
-        // Smooth Scroll & Close Menu
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 if (this.getAttribute('href') !== '#') {
@@ -737,7 +694,6 @@
             });
         });
 
-        // Scroll Reveal Animation
         const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -753,7 +709,6 @@
             observer.observe(el);
         });
 
-        // Stack Toggle Logic
         const toggleBtn = document.getElementById('toggleStackBtn');
         const hiddenStackItems = document.querySelectorAll('.togglable-stack');
 
@@ -773,8 +728,6 @@
             });
         }
 
-
-        // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
             if (mobileMenu && !mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
                 if (!mobileMenu.classList.contains('hidden')) {
